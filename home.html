@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="home-container">
+        <h2>Welcome, <span id="user"></span></h2>
+        <h3>Select a subject:</h3>
+        <div class="subjects">
+            <div class="subject">
+                <a href="lesson.html?subject=maths">
+                    <img src="https://img.freepik.com/premium-vector/mathematics-doodle-illustration-with-colored-hand-drawn-style_288411-1179.jpg?semt=ais_hybrid" alt="Maths" width="200px">
+                    <p>Maths</p>
+                </a>
+                
+            </div>
+            <div class="subject">
+                <a href="lesson.html?subject=science">
+                    <img src="https://cdn.vectorstock.com/i/1000v/05/02/science-related-icons-image-vector-10800502.jpg" alt="Science" width="200px">
+                    <p>Science</p>
+                </a>
+            </div>
+        </div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        document.getElementById("user").innerText = localStorage.getItem("loggedInUser");
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "index.html";
+        }
+        function navigateToLesson(subject) {
+            window.location.href = `lesson.html?subject=${subject}`;
+        }
+    </script>
+</body>
+</html>

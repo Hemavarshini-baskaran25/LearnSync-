@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson - LearnSync AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="lesson-container">
+        <h2 id="lesson-title"></h2>
+        <p id="lesson-content"></p>
+        
+        <!-- Video Section -->
+        <iframe id="lesson-video" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+
+        <!-- Quiz Section -->
+        <h3>Quiz</h3>
+        <div id="quiz-container"></div>
+
+        <button onclick="submitQuiz()">Submit Quiz</button>
+        <p id="quiz-result"></p>
+        <a href="profile.html" class="profile-link">View Profile</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadLesson();
+        });
+
+        function loadLesson() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let subject = urlParams.get("subject");
+
+            let lessons = {
+                "maths": {
+                    "title": "Addition Basics",
+                    "content": "Learn how to add numbers easily.",
+                    "video": "https://www.youtube.com/embed/VScM8Z8Jls0?si=DvBgWW727qEs-BMO",
+                    "quiz": [
+                        {
+                            "question": "What is 2 + 2?",
+                            "options": ["3", "4", "5"],
+                            "correct": "4",
+                            "hint": "Try counting two fingers twice!"
+                        },
+                        {
+                            "question": "What is 5 + 3?",
+                            "options": ["7", "8", "9"],
+                            "correct": "8",
+                            "hint": "Think of 5 apples and 3 more."
+                        },
+                        {
+                            "question": "What is 10 - 4?",
+                            "options": ["5", "6", "7"],
+                            "correct": "6",
+                            "hint": "Subtract 4 from 10."
+                        },
+                        {
+                            "question": "What is 3 × 3?",
+                            "options": ["6", "8", "9"],
+                            "correct": "9",
+                            "hint": "Multiplication of same numbers."
+                        },
+                        {
+                            "question": "If a pizza is divided into 4 equal parts, what is each part called?",
+                            "options": ["Half", "Quarter", "Whole"],
+                            "correct": "Quarter",
+                            "hint": "Think of fractions!"
+                        },
+                        
+                    ]
+                },
+                "science": {
+                    "title": "Water Cycle",
+                    "content": "Learn how water circulates in nature.",
+                    "video": "https://www.youtube.com/embed/al-do-HGuIk?si=I116ixJ7OjQbkSIV",
+                    "quiz": [
+                        {
+                            "question": "What is the first stage of the water cycle?",
+                            "options": ["Evaporation", "Condensation", "Precipitation"],
+                            "correct": "Evaporation",
+                            "hint": "It happens when the sun heats the water."
+                        },
+                        {
+                            "question": "What is the process of water turning into vapor?",
+                            "options": ["Condensation", "Evaporation", "Precipitation"],
+                            "correct": "Evaporation",
+                            "hint": "Heat is involved."
+                        },
+                        {
+                            "question": "What forms when water vapor cools down?",
+                            "options": ["Rain", "Clouds", "Snow"],
+                            "correct": "Clouds",
+                            "hint": "It happens before precipitation."
+                        },
+                        {
+                            "question": "What type of precipitation is frozen?",
+                            "options": ["Rain", "Hail", "Fog"],
+                            "correct": "Hail",
+                            "hint": "It falls as ice!"
+                        },
+                        {
+                            "question": "Which water body has the most evaporation?",
+                            "options": ["Oceans", "Lakes", "Rivers"],
+                            "correct": "Oceans",
+                            "hint": "Think of the largest water source!"
+                        }
+                    ]
+                }
+            };
+
+            if (!lessons[subject]) {
+                document.getElementById("lesson-title").innerText = "Lesson not found!";
+                return;
+            }
+
+            let lesson = lessons[subject];
+
+            // Load Title, Content, and Video
+            document.getElementById("lesson-title").innerText = lesson.title;
+            document.getElementById("lesson-content").innerText = lesson.content;
+            document.getElementById("lesson-video").src = lesson.video;
+
+            // Load Quiz
+            let quizContainer = document.getElementById("quiz-container");
+            quizContainer.innerHTML = "";
+
+            lesson.quiz.forEach((q, index) => {
+                let questionDiv = document.createElement("div");
+                questionDiv.innerHTML = `
+                    <p><strong>${index + 1}. ${q.question}</strong></p>
+                    ${q.options.map(opt => `<label><input type="radio" name="q${index}" value="${opt}">${opt}</label>`).join("")}
+                    <button onclick="showHint(${index})">Hint</button>
+                    <p id="hint-${index}" style="display:none;color:blue;">${q.hint}</p>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function showHint(index) {
+            document.getElementById(`hint-${index}`).style.display = "block";
+        }
+
+        function submitQuiz() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let subject = urlParams.get("subject");
+
+            let lessons = {
+                "maths": {
+                    "quiz": [
+                        { "correct": "4" },
+                        { "correct": "8" },
+                        { "correct": "6" },
+                        { "correct": "9" },
+                        { "correct": "Quarter" }
+                    ]
+                },
+                "science": {
+                    "quiz": [
+                        { "correct": "Evaporation" },
+                        { "correct": "Evaporation" },
+                        { "correct": "Clouds" },
+                        { "correct": "Hail" },
+                        { "correct": "Oceans" }
+                    ]
+                }
+            };
+
+            let lesson = lessons[subject];
+            let correctAnswers = lesson.quiz.map(q => q.correct);
+            let score = 0;
+
+            lesson.quiz.forEach((q, index) => {
+                let selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === correctAnswers[index]) {
+                    score++;
+                }
+            });
+
+            document.getElementById("quiz-result").innerText = `Your score: ${score}/${lesson.quiz.length}`;
+
+            if (score === lesson.quiz.length) {
+                localStorage.setItem("badgeEarned", "true");
+            }
+        }
+    </script>
+</body>
+</html>
+
+
